@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="oryzone_thumbnails_generator.temp">%kernel.cache_dir%/thumbnails/</parameter>
+    </parameters>
+
+    <services>
+        <service id="thumbnailsGenerator" class="Oryzone\Bundle\ThumbnailsGeneratorBundle\Image\ThumbnailsGenerator" >
+            <argument type="service" id="imagine"/>
+            <argument type="string">%oryzone_thumbnails_generator.temp%</argument>
+        </service>
+    </services>
+</container>
