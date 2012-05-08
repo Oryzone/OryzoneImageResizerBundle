@@ -79,6 +79,14 @@ class ImageResizer
 
 	public function generate($file)
 	{
+		if( !file_exists($this->tempFolder) )
+		{
+			if(!(@mkdir($this->tempFolder)))
+				throw new \RuntimeException('Cannot create temporary folder "'.$this->tempFolder."'");
+		}
+		elseif( file_exists($this->tempFolder) && !is_dir($this->tempFolder) )
+			throw new \RuntimeException('The path "'.$this->tempFolder."' given as temporary folder is not a folder");
+
 		$generated = array();
 		foreach($this->formats as $format)
 		{
@@ -116,9 +124,9 @@ class ImageResizer
 		if($format->getResizeMode() == ImageFormat::RESIZE_MODE_PROPORTIONAL || $format->getResizeMode() == ImageFormat::RESIZE_MODE_STRETCH)
 			$image->resize($box);
 		elseif( $format->getResizeMode() == ImageFormat::RESIZE_MODE_CROP )
-			$image->thumbnail($box);
+			$image = $image->thumbnail($box, ImageInterface::THUMBNAIL_OUTBOUND);
 
-		$outputName = rtrim($this->tempFolder, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . md5(uniqid().$file) . '.' . $format->getFormat();
+		$outputName = rtrim($this->tempFolder, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . md5($file).'_'.$format->getName() . '.' . $format->getFormat();
 		$image->save($outputName, array('quality' => $format->getQuality()));
 
 		return $outputName;
