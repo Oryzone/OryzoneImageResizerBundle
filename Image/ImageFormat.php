@@ -4,21 +4,21 @@ namespace Oryzone\Bundle\ImageResizerBundle\Image;
 
 class ImageFormat
 {
-	const MODE_STRETCH = 'stretch';
-	const MODE_PROPORTIONAL = 'proportional';
-	const MODE_CROP = 'crop';
+	const RESIZE_MODE_STRETCH = 'stretch';
+	const RESIZE_MODE_PROPORTIONAL = 'proportional';
+	const RESIZE_MODE_CROP = 'crop';
 
 	protected $name;
 	protected $width;
 	protected $height;
-	protected $mode;
+	protected $resizeMode;
 
-	public function __construct($name, $width, $height, $mode = self::MODE_PROPORTIONAL)
+	public function __construct($name, $width, $height, $resizeMode = self::RESIZE_MODE_PROPORTIONAL)
 	{
 		$this->name = $name;
 		$this->width = $width;
 		$this->height = $height;
-		$this->mode = $mode;
+		$this->resizeMode = $resizeMode;
 	}
 
 	public function getName()
@@ -31,9 +31,9 @@ class ImageFormat
 		return $this->height;
 	}
 
-	public function getMode()
+	public function getResizeMode()
 	{
-		return $this->mode;
+		return $this->resizeMode;
 	}
 
 	public function getWidth()

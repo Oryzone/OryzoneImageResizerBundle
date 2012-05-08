@@ -1,16 +1,16 @@
 <?php
 
-namespace Oryzone\Bundle\ThumbnailsGeneratorBundle\Tests\Image;
+namespace Oryzone\Bundle\ImageResizerBundle\Tests\Image;
 
-use Oryzone\Bundle\ThumbnailsGeneratorBundle\Image\ThumbnailsGenerator;
+use Oryzone\Bundle\ImageResizerBundle\Image\ImagesResizer;
 
-class ThumbnailsGeneratorTest extends \PHPUnit_Framework_TestCase
+class ImageResizerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var ThumbnailsGenerator
+     * @var ImageResizer $resizer
      */
-    protected $generator;
+    protected $resizer;
 
     protected function setUp()
     {

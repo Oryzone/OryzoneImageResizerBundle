@@ -22,6 +22,4 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 class OryzoneImageResizerBundle extends Bundle
 {
 
-
-
 }

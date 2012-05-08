@@ -15,7 +15,7 @@ class ImagesResizer
 	protected $imagine;
 	
 	/**
-	* The temporary folder where thumbnails will be stored
+	* The temporary folder where images will be stored
 	*
 	* @var string $tempFolder
 	*/
@@ -29,7 +29,7 @@ class ImagesResizer
 	* Constructor
 	*  
 	* @param ImagineInterface 	$imagine 		the imagine instance to use
-	* @param string 			$tempFolder 	The temporary folder where thumbnails will be stored
+	* @param string 			$tempFolder 	The temporary folder where images will be stored
 	*/ 
 	public function __construct(ImagineInterface $imagine, $tempFolder, $defaultFormats = array())
 	{
@@ -56,7 +56,7 @@ class ImagesResizer
 		return $this->formats;
 	}
 
-	public function addFormat(ThumbnailFormat $format)
+	public function addFormat(ImageFormat $format)
 	{
 		$this->formats[] = $format;
 		return $this;
@@ -79,7 +79,7 @@ class ImagesResizer
 		return $generated;
 	}
 
-	protected function processFormat($file, ThumbnailFormat $format)
+	protected function processFormat($file, ImageFormat $format)
 	{
 
 	}
