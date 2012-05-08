@@ -27,30 +27,23 @@ class Configuration implements ConfigurationInterface
 	    /*
 	    oryzone_image_resizer:
 		    formats:
-			    - { name: big, width: 800, mode : proportional }
-			    - { name: default, width: 500, mode: proportional }
-			    - { name: medium, width: 300, mode: proportional }
-			    - { name: small, width: 100, mode: crop }
+			    - { name: big,      width: 800,     resizeMode : proportional }
+			    - { name: default,  width: 500,     resizeMode: proportional }
+			    - { name: medium,   width: 300,     resizeMode: proportional }
+			    - { name: small,    width: 100,     resizeMode: crop }
 	     */
 
         $rootNode
             ->children()
                 ->arrayNode('formats')
-	                ->useAttributeAsKey('name')
                     ->prototype('array')
                         ->children()
-							->scalarNode('name')
-
-		                    ->end()
-	                        ->scalarNode('width')
-	                            ->defaultNull()
-	                        ->end()
-	                        ->scalarNode('height')
-	                            ->defaultNull()
-	                        ->end()
-	                        ->scalarNode('mode')
-	                            ->defaultNull()
-                            ->end()
+							->scalarNode('name')->end()
+	                        ->scalarNode('width')->defaultNull()->end()
+	                        ->scalarNode('height')->defaultNull()->end()
+	                        ->scalarNode('resizeMode')->defaultNull()->end()
+                            ->scalarNode('format')->defaultNull()->end()
+                            ->scalarNode('quality')->defaultNull()->end()
                         ->end()
                     ->end()
 	            ->end()
