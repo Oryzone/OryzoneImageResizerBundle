@@ -8,9 +8,10 @@
     </parameters>
 
     <services>
-        <service id="imageResizer" class="Oryzone\Bundle\ThumbnailsGeneratorBundle\Image\ImageResizer" >
+        <service id="imageresizer" class="Oryzone\Bundle\ImageResizerBundle\Image\ImageResizer" >
             <argument type="service" id="imagine"/>
             <argument type="string">%oryzone_imageresizer.temp%</argument>
+            <argument type="collection">%oryzone_imageresizer.defaultformats%</argument>
         </service>
     </services>
 </container>

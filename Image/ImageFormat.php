@@ -13,8 +13,10 @@ class ImageFormat
 	protected $height;
 	protected $resizeMode;
 
-	public function __construct($name, $width, $height, $resizeMode = self::RESIZE_MODE_PROPORTIONAL)
+	public function __construct($name, $width, $height, $resizeMode = self::RESIZE_MODE_STRETCH)
 	{
+		// TODO validate parameters
+
 		$this->name = $name;
 		$this->width = $width;
 		$this->height = $height;

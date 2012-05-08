@@ -2,7 +2,7 @@
 
 namespace Oryzone\Bundle\ImageResizerBundle\Tests\Image;
 
-use Oryzone\Bundle\ImageResizerBundle\Image\ImagesResizer;
+use Oryzone\Bundle\ImageResizerBundle\Image\ImageResizer;
 
 class ImageResizerTest extends \PHPUnit_Framework_TestCase
 {

@@ -18,11 +18,42 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('imageresizer');
+
+	    /**
+	     * @var Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition $rootNode
+	     */
+        $rootNode = $treeBuilder->root('oryzone_image_resizer');
+
+	    /*
+	    oryzone_image_resizer:
+		    formats:
+			    - { name: big, width: 800, mode : proportional }
+			    - { name: default, width: 500, mode: proportional }
+			    - { name: medium, width: 300, mode: proportional }
+			    - { name: small, width: 100, mode: crop }
+	     */
 
         $rootNode
             ->children()
-            ->scalarNode('enabled')->defaultValue('false')->end() // TODO change
+                ->arrayNode('formats')
+	                ->useAttributeAsKey('name')
+                    ->prototype('array')
+                        ->children()
+							->scalarNode('name')
+
+		                    ->end()
+	                        ->scalarNode('width')
+	                            ->defaultNull()
+	                        ->end()
+	                        ->scalarNode('height')
+	                            ->defaultNull()
+	                        ->end()
+	                        ->scalarNode('mode')
+	                            ->defaultNull()
+                            ->end()
+                        ->end()
+                    ->end()
+	            ->end()
             ->end()
         ;
 

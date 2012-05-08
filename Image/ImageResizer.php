@@ -2,9 +2,9 @@
 
 namespace Oryzone\Bundle\ImageResizerBundle\Image;
 
-use Imagine\ImagineInterface;
+use Imagine\Image\ImagineInterface;
 
-class ImagesResizer
+class ImageResizer
 {
 
 	/**
