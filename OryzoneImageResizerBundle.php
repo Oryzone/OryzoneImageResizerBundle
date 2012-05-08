@@ -15,11 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Oryzone\Bundle\ThumbnailsGeneratorBundle;
+namespace Oryzone\Bundle\ImageResizerBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class OryzoneThumbnailsGeneratorBundle extends Bundle
+class OryzoneImageResizerBundle extends Bundle
 {
 
 
