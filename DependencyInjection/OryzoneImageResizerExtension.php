@@ -23,11 +23,12 @@ class OryzoneImageResizerExtension extends Extension
     {
 	    $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-	    $container->setParameter('oryzone_imageresizer.defaultformats', $config['formats']);
+
+	    $container->setParameter('oryzone_image_resizer.formats_groups', $config['formats']);
 	    $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
 
 	    if(isset($config['temp_folder']) && $config['temp_folder'] != NULL)
-		    $container->setParameter('oryzone_imageresizer.temp_folder', $config['temp_folder']);
+		    $container->setParameter('oryzone_image_resizer.temp_folder', $config['temp_folder']);
     }
 }

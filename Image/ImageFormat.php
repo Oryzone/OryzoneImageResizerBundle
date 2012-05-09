@@ -73,11 +73,11 @@ class ImageFormat
 	 *
 	 * @var array
 	 */
-	protected static $RESIZE_MODES = array
+	public static $RESIZE_MODES = array
 	(
+		self::RESIZE_MODE_STRETCH,
 		self::RESIZE_MODE_CROP,
-		self::RESIZE_MODE_PROPORTIONAL,
-		self::RESIZE_MODE_STRETCH
+		self::RESIZE_MODE_PROPORTIONAL
 	);
 
 	/**
@@ -197,11 +197,29 @@ class ImageFormat
 
 	/**
 	 * To string method
+	 *
 	 * @return string
 	 */
 	public function __toString()
 	{
 		return $this->name;
+	}
+
+	/**
+	 * Converts the current format to array
+	 *
+	 * @return array
+	 */
+	public function toArray()
+	{
+		return array(
+			'name'      => $this->name,
+			'width'     => $this->width,
+			'height'    => $this->height,
+			'resizeMode'=> $this->resizeMode,
+			'format'    => $this->format,
+			'quality'   => $this->quality
+		);
 	}
 
 	/**
@@ -216,10 +234,13 @@ class ImageFormat
 	 *
 	 * @static
 	 * @param array $array
+	 * @throws \InvalidArgumentException if the given array does not contain one of the required keys
 	 * @return ImageFormat
 	 */
 	public static function newFromArray($array)
 	{
+		self::validateImageFormatArray($array, true);
+
 		return new self(
 			$array['name'],
 			$array['width'],
@@ -228,5 +249,29 @@ class ImageFormat
 			$array['format'],
 			$array['quality']
 		);
+	}
+
+	/**
+	 * Validates an array to see if it is a valid image format array
+	 *
+	 * @static
+	 * @param array $array
+	 * @param bool $throwExceptionOnError
+	 * @throws \InvalidArgumentException if the array is not valid and the flag $throwExceptionOnError is set to
+	 * <code>true</code>
+	 * @return bool <code>true</code> if the array is valid
+	 */
+	public static function validateImageFormatArray(array $array, $throwExceptionOnError = false)
+	{
+		$requiredKeys = array('name', 'width', 'height', 'resizeMode', 'format', 'quality');
+
+		foreach($requiredKeys as $key)
+			if(!isset($array[$key]))
+				if($throwExceptionOnError)
+					throw new \InvalidArgumentException('The given array does not contain the "'.$key.'" key');
+				else
+					return false;
+
+		return true;
 	}
 }

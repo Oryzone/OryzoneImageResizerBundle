@@ -61,11 +61,12 @@ class ImageResizer
 	protected $formats;
 
 	/**
-	 * An array of formats or an array of arrays to be used as default formats (added on initialization)
+	 * An array that contains all the defined format groups. Group of formats can be configured in symfony application
+	 * so to load easily a whole list of formats
 	 *
-	 * @var array|array<ImageFormat> $defaultFormats
+	 * @var array $formatsGroups
 	 */
-	protected $defaultFormats;
+	protected $formatsGroups;
 
 	/**
 	 * An array containing the list of all generated files
@@ -86,49 +87,15 @@ class ImageResizer
 	 *
 	 * @param ImagineInterface 	$imagine 		the imagine instance to use
 	 * @param string 			$tempFolder 	The temporary folder where images will be stored
-	 * @param array             $defaultFormats An array of formats to be used as default formats
+	 * @param array             $formatsGroups   An array to define available format groups
 	 */
-	public function __construct(ImagineInterface $imagine, $tempFolder, $defaultFormats = array())
+	public function __construct(ImagineInterface $imagine, $tempFolder, $formatsGroups = array())
 	{
 		$this->imagine = $imagine;
 		$this->tempFolder = $tempFolder;
-		$this->defaultFormats = $defaultFormats;
-		$this->loadDefaultFormats();
+		$this->formatsGroups = $formatsGroups;
 		$this->generatedFiles = array();
 		$this->skipBiggerFormatsEnabled = false;
-	}
-
-	/**
-	 * Removes all currently attached formats
-	 *
-	 * @return ImageResizer to enable fluent syntax
-	 */
-	public function clearFormats()
-	{
-		$this->formats = array();
-		return $this;
-	}
-
-	/**
-	 * Replaces the current array of formats with a new one
-	 *
-	 * @param array<ImageFormat> $formats
-	 * @return ImageResizer to enable fluent syntax
-	 */
-	public function setFormats($formats)
-	{
-		$this->formats = $formats;
-		return $this;
-	}
-
-	/**
-	 * Gets the currently set formats
-	 *
-	 * @return array<ImageFormat>
-	 */
-	public function getFormats()
-	{
-		return $this->formats;
 	}
 
 	/**
@@ -176,35 +143,99 @@ class ImageResizer
 	}
 
 	/**
-	 * Add a new format to the list of the formats to generate
+	 * Adds a formats group to the list of the available formats groups
 	 *
-	 * @param ImageFormat $format
+	 * @param string $name the name of the group
+	 * @param array $group
+	 * @throws \InvalidArgumentException if the given group contains invalid formats
 	 * @return ImageResizer to enable fluent syntax
 	 */
-	public function addFormat(ImageFormat $format)
+	public function addFormatsGroup($name, array $group)
 	{
+		foreach($group as $format)
+			if( (is_array($format) && !ImageFormat::validateImageFormatArray($format)) ||
+				!( $format instanceof ImageFormat ) )
+					throw new \InvalidArgumentException('The give group contains invalid formats');
+
+		$this->formatsGroups[$name] = $group;
+		return $this;
+	}
+
+	/**
+	 * Removes all currently attached formats
+	 *
+	 * @return ImageResizer to enable fluent syntax
+	 */
+	public function detachAllFormats()
+	{
+		$this->formats = array();
+		return $this;
+	}
+
+	/**
+	 * Replaces the current array of formats with a new one
+	 *
+	 * @param array $formats
+	 * @return ImageResizer to enable fluent syntax
+	 */
+	public function useFormatsFromArray(array $formats)
+	{
+		foreach($formats as $format)
+			$this->addFormat($format);
+
+		return $this;
+	}
+
+	/**
+	 * Loads and attaches all the formats defined in the formats group with the given name
+	 *
+	 * @param string $groupName the name of the group from wich to load formats
+	 * @return ImageResizer to enable fluent syntax
+	 * @throws \InvalidArgumentException if an invalid formats group name is given
+	 */
+	public function useFormatsGroup($groupName)
+	{
+		if(! isset($this->formatsGroups[$groupName]) )
+			throw new \InvalidArgumentException('Undefined formatGrop with name "'.$groupName.'"');
+
+		return $this->useFormatsFromArray($this->formatsGroups[$groupName]);
+	}
+
+	/**
+	 * Loads and attaches a given <ImageFormat> or a compliant image format array
+	 * @param ImageFormat|array $format
+	 * @return ImageResizer to enable fluent syntax
+	 */
+	public function useFormat($format)
+	{
+		return $this->addFormat($format);
+	}
+
+	/**
+	 * Add a new format to the list of the formats to generate
+	 *
+	 * @param ImageFormat|array $format
+	 * @return ImageResizer to enable fluent syntax
+	 */
+	protected function addFormat($format)
+	{
+		if(is_array($format))
+			$format = ImageFormat::newFromArray($format);
+		if(!( $format instanceof ImageFormat))
+			throw new \InvalidArgumentException( 'The given format must be an instance of "ImageFormat" or a compatible array"' );
+
 		$this->formats[] = $format;
 		return $this;
 	}
 
 	/**
-	 * Load the default formats (if any) into the list of current formats. Useful if you have previously removed the
-	 * attached formats and want the default ones again.
+	 * Gets the currently set formats
 	 *
-	 * @return ImageResizer to enable fluent syntax
+	 * @return array<ImageFormat>
 	 */
-	public function loadDefaultFormats()
+	public function getAttachedFormats()
 	{
-		$formats = array();
-
-		foreach($this->defaultFormats as $defaultFormat)
-			if($defaultFormat instanceof ImageFormat)
-				$formats[] = $defaultFormat;
-			else
-				$formats[] = ImageFormat::newFromArray($defaultFormat);
-
-		$this->formats = $formats;
-		return $this;
+		return $this->formats;
 	}
 
 	/**
@@ -215,7 +246,7 @@ class ImageResizer
 	 * array where values are the file paths and keys are the related <ImageFormat> names.
 	 * @throws \RuntimeException if cannot create or use the current temporary folder
 	 */
-	public function generateFrom($file)
+	public function resize($file)
 	{
 		if( !file_exists($this->tempFolder) )
 		{

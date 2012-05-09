@@ -4,6 +4,7 @@ namespace Oryzone\Bundle\ImageResizerBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Oryzone\Bundle\ImageResizerBundle\Image\ImageFormat;
 
 /**
  * This is the class that validates and merges configuration from your app/config files
@@ -19,6 +20,8 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
 
+	    $supportedResizeModes = ImageFormat::$RESIZE_MODES;
+
 	    /**
 	     * @var Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition $rootNode
 	     */
@@ -27,11 +30,18 @@ class Configuration implements ConfigurationInterface
 	    /*
 	    oryzone_image_resizer:
 		    formats:
-			    - { name: big,      width: 800,     resizeMode : proportional }
-			    - { name: default,  width: 500,     resizeMode: proportional }
-			    - { name: medium,   width: 300,     resizeMode: proportional }
-			    - { name: small,    width: 100,     resizeMode: crop }
+	            group1:
+				    - { name: big,      width: 800,     resizeMode : proportional }
+				    - { name: default,  width: 500,     resizeMode: proportional }
+				    - { name: medium,   width: 300,     resizeMode: proportional }
+				    - { name: small,    width: 100,     resizeMode: crop }
+	            group2:
+	                - { name: default,  width: 500,     resizeMode: proportional }
+				    - { name: medium,   width: 300,     resizeMode: proportional }
 	     */
+
+
+
 
         $rootNode
             ->children()
@@ -39,15 +49,25 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->children()
                 ->arrayNode('formats')
-                    ->prototype('array')
-                        ->children()
-							->scalarNode('name')->end()
-	                        ->scalarNode('width')->defaultNull()->end()
-	                        ->scalarNode('height')->defaultNull()->end()
-	                        ->scalarNode('resizeMode')->defaultNull()->end()
-                            ->scalarNode('format')->defaultNull()->end()
-                            ->scalarNode('quality')->defaultNull()->end()
-                        ->end()
+			        ->useAttributeAsKey('id')
+			        ->prototype('array')
+			            ->performNoDeepMerging()
+	                    ->prototype('array')
+	                        ->children()
+								->scalarNode('name')->end()
+		                        ->scalarNode('width')->defaultNull()->end()
+		                        ->scalarNode('height')->defaultNull()->end()
+		                        ->scalarNode('resizeMode')->defaultNull()->end()
+	                            ->scalarNode('format')
+		                            ->defaultValue($supportedResizeModes[0])
+							        ->validate()
+							            ->ifNotInArray($supportedResizeModes)
+							            ->thenInvalid('The resize mode \'%s\' is not supported. Please choose one of '.json_encode($supportedResizeModes))
+							        ->end()
+		                        ->end()
+	                            ->scalarNode('quality')->defaultNull()->end()
+	                        ->end()
+	                    ->end()
                     ->end()
 	            ->end()
             ->end()
