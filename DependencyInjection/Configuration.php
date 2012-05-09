@@ -35,6 +35,9 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->scalarNode('temp_folder')->defaultNull()->end()
+            ->end()
+            ->children()
                 ->arrayNode('formats')
                     ->prototype('array')
                         ->children()
