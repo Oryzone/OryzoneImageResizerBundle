@@ -258,10 +258,7 @@ class ImageResizer
 
 		$generated = array();
 		foreach($this->formats as $format)
-		{
-			if( ($result = $this->processFormat($file, $format)) )
-				$generated[$format->getName()] = $result;
-		}
+			$generated[$format->getName()] = $this->processFormat($file, $format);
 
 		return $generated;
 	}
