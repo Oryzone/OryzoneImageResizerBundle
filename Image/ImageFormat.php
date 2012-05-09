@@ -266,7 +266,7 @@ class ImageFormat
 		$requiredKeys = array('name', 'width', 'height', 'resizeMode', 'format', 'quality');
 
 		foreach($requiredKeys as $key)
-			if(!isset($array[$key]))
+			if(!array_key_exists($key, $array))
 				if($throwExceptionOnError)
 					throw new \InvalidArgumentException('The given array does not contain the "'.$key.'" key');
 				else
