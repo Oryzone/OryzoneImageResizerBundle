@@ -206,6 +206,16 @@ class ImageFormat
 	}
 
 	/**
+	 * Returns a serialized string representation of the current format
+	 *
+	 * @return string
+	 */
+	public function toSerializedString()
+	{
+		return sprintf('n:%s,w:%s,h:%s,r:%s,f:%s,q:%s', $this->name, $this->width, $this->height, $this->resizeMode, $this->format, $this->quality);
+	}
+
+	/**
 	 * Converts the current format to array
 	 *
 	 * @return array

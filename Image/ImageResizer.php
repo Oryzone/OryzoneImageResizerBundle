@@ -303,7 +303,7 @@ class ImageResizer
 		elseif( $format->getResizeMode() == ImageFormat::RESIZE_MODE_CROP )
 			$image = $image->thumbnail($box, ImageInterface::THUMBNAIL_OUTBOUND);
 
-		$filename = md5($file).'_'.$format->getName();
+		$filename = md5($file.$format->toSerializedString()).'_'.$format->getName();
 		$outputName = rtrim($this->tempFolder, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $filename . '.' . $format->getFormat();
 		$image->save($outputName, array('quality' => $format->getQuality()));
 
